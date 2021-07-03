@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Orders</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="blocks/adminHeader" :: header></header>
+<table>
+    <tr>
+        <th>Order id</th>
+        <th>User</th>
+        <th>Car</th>
+        <th>Driver</th>
+        <th>Term</th>
+        <th>Total cost</th>
+        <th>Order status</th>
+    </tr>
+    <div th:each="user_order : ${orders}">
+        <tr>
+            <td><p th:text="${user_order.getId()}">order id</p></td>
+            <td><p th:text="${user_order.getUser().getUsername()}">user</p></td>
+            <td><p th:text="${user_order.getCar().getMarque()}+' '
+                +${user_order.getCar().getModel()}+' ,id:'
+                +${user_order.getCar().getId()}">Car</p></td>
+            <td><p th:text="${user_order.getDriver()}">Driver</p></td>
+            <td><p th:text="${user_order.getTerm()}">Term</p></td>
+            <td><p th:text="${user_order.getTotal_cost()}">Total</p></td>
+            <td>
+                <p th:text="${user_order.getOrder_status()}">Status</p>
+                <form th:action="@{/admin/order/status}" method="post">
+                    <select name="order_status">
+                        <option value="CONFIRMED">confirmed</option>
+                        <option value="REJECTED">rejected</option>
+                        <option value="CHECKING">checking</option>
+                        <option value="FINISHED">finished</option>
+                    </select>
+                    <input type="hidden" name="order_id" th:value="${user_order.getId()}">
+                    <input type="submit" value="set">
+                </form>
+            </td>
+        </tr>
+    </div>
+</table>
+<form th:action="@{/admin/cars/add}" method="get">
+    <input type="submit" value="add new car">
+</form>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+<footer th:insert="blocks/footer" :: footer></footer>
+</body>
+</html>

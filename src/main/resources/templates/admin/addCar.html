@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Add car</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/adminHeader" :: header></header>
+ADD NEW CAR
+<form th:action="@{/admin/cars/add}" method="post" th:object="${car}">
+    <div>
+        <div style="color: red"
+             th:if="${#fields.hasErrors('marque')}"
+             th:errors="*{marque}">name err
+        </div>
+        <label> Marque : <input type="text" name="marque"/> </label>
+    </div>
+    <div>
+        <div style="color: red"
+             th:if="${#fields.hasErrors('model')}"
+             th:errors="*{model}">name err
+        </div>
+        <label> Model: <input type="text" name="model"/> </label>
+    </div>
+    <label>Comfort:
+        <select name="comfort">
+            <option value="ECONOM">ECONOM</option>
+            <option value="MIDDLE">MIDDLE</option>
+            <option value="BUSINESS">BUSINESS</option>
+        </select>
+    </label>
+    <div>
+        <div style="color: red"
+             th:if="${#fields.hasErrors('price')}"
+             th:errors="*{price}">name err
+        </div>
+        <label> Price: <input type="number" name="price"/> </label>
+    </div>
+    <input type="hidden" name="car_status" value="FREE">
+    <div><input type="submit" value="add car"/></div>
+</form>
+</body>
+</html>
