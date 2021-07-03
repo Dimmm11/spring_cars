@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/user")
@@ -56,8 +58,9 @@ public class UserController {
                            @RequestParam("term") BigDecimal term) {
         UserEntity userEntity = userService.findByUsername(principal.getName());
         Long userId = userEntity.getId();
+
         Car car = carService.findCarById(id);
-        orderService.carOrder(userId, id, driver, term, car.getPrice().multiply(term));
+        orderService.carOrder(userId, id, driver, term, car.getPrice().multiply(term), LocalDateTime.now().withSecond(0));
         carService.orderCar(id);
         model.addAttribute("orders", orderService.findByUser_Id(userId));
         return "redirect:/user/orders";

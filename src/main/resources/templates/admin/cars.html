@@ -55,23 +55,7 @@
             </td>
         </tr>
     </div>
-
-
-    <!--        <div th:each="car : ${cars}">-->
-    <!--            <p th:text="${car.getMarque()+', '+car.getModel()+', '+car.getComfort()+', '+car.getPrice()}">user info</p>-->
-    <!--            <form th:action="@{/admin/cars/update/{id}(id=${car.getId()})}"-->
-    <!--                  th:method="get">-->
-    <!--                <input type="submit" value="update">-->
-    <!--            </form>-->
-    <!--            <form th:action="@{/admin/cars/delete/{id}(id=${car.getId()})}"-->
-    <!--                  th:method="post">-->
-    <!--                <input type="submit" value="delete">-->
-    <!--            </form>-->
-    <!--        </div>-->
-
 </table>
-
-
 <hr/>
 <form th:action="@{/admin/cars/add}" method="get">
     <input type="submit" value="add new car">

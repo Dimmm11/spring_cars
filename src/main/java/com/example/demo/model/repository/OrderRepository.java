@@ -7,20 +7,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Modifying
-    @Query(value = "INSERT INTO user_order (user_id, car_id, driver, term, total_cost, order_status) " +
-            "VALUES (:userId, :carId, :driver, :term, :total_cost, 'CHECKING')",
+    @Query(value = "INSERT INTO user_order (user_id, car_id, driver, term, total_cost, order_status, local_date_time) " +
+            "VALUES (:userId, :carId, :driver, :term, :total_cost, 'CHECKING', :dateTime)",
             nativeQuery = true)
     void carOrder(@Param("userId") Long userId,
                   @Param("carId") Long carId,
                   @Param("driver") Boolean driver,
                   @Param("term") BigDecimal term,
-                  @Param("total_cost") BigDecimal total_cost);
+                  @Param("total_cost") BigDecimal total_cost,
+                  @Param("dateTime") LocalDateTime localDate);
 
     List<Order> findByUser_Id(Long id);
 

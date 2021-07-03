@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -13,8 +14,8 @@ public class OrderServiceImpl implements OrderService{
     OrderRepository orderRepository;
 
     @Override
-    public void carOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal total_cost) {
-       orderRepository.carOrder(userId, carId, driver, term, total_cost);
+    public void carOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal total_cost, LocalDateTime localDateTime) {
+       orderRepository.carOrder(userId, carId, driver, term, total_cost, localDateTime);
     }
 
     @Override
