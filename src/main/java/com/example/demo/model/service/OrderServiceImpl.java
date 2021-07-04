@@ -47,4 +47,10 @@ public class OrderServiceImpl implements OrderService{
     public List<Order> findAllByUserAndStatus(String orderStatus, Long userId){
         return orderRepository.findAllByUserAndStatus(orderStatus, userId);
     }
+
+    @Override
+    public void copyAndFinishOrder(Long orderId) {
+        orderRepository.finishOrder(orderId);
+        orderRepository.deleteById(orderId);
+    }
 }

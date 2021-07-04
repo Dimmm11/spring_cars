@@ -27,4 +27,6 @@ public interface OrderService {
 
     List<Order> findAllByUserAndStatus(String orderStatus,
                                        Long userId);
+
+    void copyAndFinishOrder(Long orderId);
 }

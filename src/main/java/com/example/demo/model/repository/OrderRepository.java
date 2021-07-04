@@ -33,7 +33,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     int setOrderStatus(@Param("orderStatus") String orderStatus,@Param("orderId") Long orderId);
 
 
-    @Query(value = "SELECT * FROM user_order WHERE user_id = :userId AND order_status NOT LIKE :orderStatus", nativeQuery = true)
+    @Query(value = "SELECT * FROM user_order WHERE user_id = :userId AND order_status NOT LIKE :orderStatus",
+            nativeQuery = true)
     List<Order> findAllByUserAndStatus(@Param("orderStatus") String orderStatus,
                                        @Param("userId")Long userId);
 
@@ -42,4 +43,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
      @Modifying
      void deleteById(Long id);
+
+     @Modifying
+     @Query(value = "INSERT INTO finished_order(order_id, user_id, local_date_time, term, total_cost, car_id) " +
+             "SELECT id, user_id, local_date_time, term, total_cost, car_id " +
+             "FROM user_order WHERE id=:orderId",
+             nativeQuery = true)
+     int finishOrder(@Param("orderId")Long orderId);
 }

@@ -36,7 +36,6 @@ public class Order {
     private Boolean driver;
 
     @Min(value = 1)
-    @Column(columnDefinition = "DECIMAL default 1")
     private BigDecimal term;
 
     @Min(value = 0)

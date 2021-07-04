@@ -33,6 +33,7 @@
         <th>Term</th>
         <th>Total cost</th>
         <th>Order status</th>
+        <th>Action</th>
     </tr>
     <div th:each="user_order : ${orders}">
         <tr>
@@ -55,6 +56,13 @@
                     </select>
                     <input type="hidden" name="order_id" th:value="${user_order.getId()}">
                     <input type="submit" value="set">
+                </form>
+            </td>
+            <td>
+                <form method="post" th:action="@{/admin/order/finish}">
+                    <input type="hidden" name="orderId" th:value="${user_order.getId()}">
+                    <input type="hidden" name="carId" th:value="${user_order.getCar().getId()}">
+                    <input type="submit" value="finish">
                 </form>
             </td>
         </tr>

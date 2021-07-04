@@ -149,8 +149,15 @@ public class AdminController {
         if (order_status.equals(OrderStatus.FINISHED.name()) || order_status.equals(OrderStatus.REJECTED.name())) {
             carService.setCarFree(order.getCar().getId());
         }
+        return "redirect:/admin/orders";
+    }
 
-
+    @PostMapping("/order/finish")
+    @Transactional
+    public String finishOrder(@RequestParam("orderId")Long orderId,
+                              @RequestParam("carId")Long carId){
+     orderService.copyAndFinishOrder(orderId);
+     carService.setCarFree(carId);
         return "redirect:/admin/orders";
     }
 }
