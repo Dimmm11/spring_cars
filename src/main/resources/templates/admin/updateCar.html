@@ -4,42 +4,101 @@
 <head>
     <title>Update CAR</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="/static/css/loginForm.css">
 </head>
 <body>
-Update CAR
-<form th:action="@{/admin/cars/update}"
-      method="post"
-      th:object="${car}">
-    <div>
-        <div style="color: red"
-             th:if="${#fields.hasErrors('marque')}"
-             th:errors="*{marque}">name err
+<!--Update CAR-->
+<!--<form th:action="@{/admin/cars/update}" method="post" th:object="${car}">-->
+<!--    <div>-->
+<!--        <div style="color: red"-->
+<!--             th:if="${#fields.hasErrors('marque')}"-->
+<!--             th:errors="*{marque}">name err-->
+<!--        </div>-->
+<!--        <label> Marque : <input type="text" name="marque" th:field="*{marque}"/> </label>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <div style="color: red"-->
+<!--             th:if="${#fields.hasErrors('model')}"-->
+<!--             th:errors="*{model}">name err-->
+<!--        </div>-->
+<!--        <label> Model: <input type="text" name="model" th:field="*{model}"/> </label>-->
+<!--    </div>-->
+<!--    <label>Comfort:-->
+<!--        <select name="comfort">-->
+<!--            <option value="ECONOM">ECONOM</option>-->
+<!--            <option value="MIDDLE">MIDDLE</option>-->
+<!--            <option value="BUSINESS">BUSINESS</option>-->
+<!--        </select>-->
+<!--    </label>-->
+<!--    <div>-->
+<!--        <div style="color: red"-->
+<!--             th:if="${#fields.hasErrors('price')}"-->
+<!--             th:errors="*{price}">name err-->
+<!--        </div>-->
+<!--        <label> Price: <input type="number" name="price" th:field="*{price}"/> </label>-->
+<!--    </div>-->
+<!--    <input type="hidden" name="id" th:value="*{id}">-->
+<!--    <div><input type="submit" value="update car"/></div>-->
+<!--</form>-->
+<!---------------------------------------->
+<div id="login">
+    <h3 class="text-center text-white pt-5">New car</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
+                    <form id="login-form" class="form" th:action="@{/admin/cars/update}" method="post" th:object="${car}">
+                        <h3 class="text-center text-info">Edit</h3>
+
+                        <div class="form-group">
+                            <div style="color: red"
+                                 th:if="${#fields.hasErrors('marque')}"
+                                 th:errors="*{marque}">name err
+                            </div>
+                            <label class="text-info" style="font-size: large"> Marque : <input type="text" name="marque" th:field="*{marque}" class="form-control" required/> </label>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="color: red"
+                                 th:if="${#fields.hasErrors('model')}"
+                                 th:errors="*{model}">name err
+                            </div>
+                            <label class="text-info" style="font-size: large"> Model: <input type="text" name="model" th:field="*{model}" class="form-control" required/> </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-info" style="font-size: large">Comfort:
+                                <select name="comfort" class="form-control">
+                                    <option value="ECONOM">ECONOM</option>
+                                    <option value="MIDDLE">MIDDLE</option>
+                                    <option value="BUSINESS">BUSINESS</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="color: red"
+                                 th:if="${#fields.hasErrors('price')}"
+                                 th:errors="*{price}">name err
+                            </div>
+                            <label class="text-info" style="font-size: large"> Price: <input type="number" name="price" th:field="*{price}" class="form-control"/> </label>
+                        </div>
+                        <input type="hidden" name="id" th:value="*{id}">
+
+                        <div class="form-group">
+                            <input type="submit" name="submit" class="btn btn-primary" value="save">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
-        <label> Marque : <input type="text" name="marque" th:field="*{marque}"/> </label>
     </div>
-    <div>
-        <div style="color: red"
-             th:if="${#fields.hasErrors('model')}"
-             th:errors="*{model}">name err
-        </div>
-        <label> Model: <input type="text" name="model" th:field="*{model}"/> </label>
-    </div>
-    <label>Comfort:
-        <select name="comfort">
-            <option value="ECONOM">ECONOM</option>
-            <option value="MIDDLE">MIDDLE</option>
-            <option value="BUSINESS">BUSINESS</option>
-        </select>
-    </label>
-    <div>
-        <div style="color: red"
-             th:if="${#fields.hasErrors('price')}"
-             th:errors="*{price}">name err
-        </div>
-        <label> Price: <input type="number" name="price" th:field="*{price}"/> </label>
-    </div>
-    <input type="hidden" name="id" th:value="*{id}">
-    <div><input type="submit" value="update car"/></div>
-</form>
+</div>
 </body>
 </html>

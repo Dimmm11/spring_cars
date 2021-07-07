@@ -2,33 +2,98 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+
     <title>Car List</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <header th:insert="blocks/header" :: header></header>
-<div th:each="car : ${cars}">
-    <p th:text="${car.getMarque()+', '+car.getModel()+', '+car.getComfort()+', '+car.getPrice()}">info</p>
-
-    <form th:action="@{/user/make_order/{id}(id=${car.getId()})}"
-          method="post"
-          th:object="${car}">
-        <label>Driver:
-            <select name="driver">
-                <option value="YES">YES</option>
-                <option value="NO" selected>NO</option>
-            </select>
-        </label>
-        <label>Term:
-            <input type="number" name="term">
-        </label>
-        <input type="submit" value="make order">
-    </form>
+<div class="container my-2">
+    <h1>Available cars</h1>
+    <table border="1" class="table table-striped table-responsive-md">
+        <tr>
+            <th>Id</th>
+            <th>Marque</th>
+            <th>Model</th>
+            <th>CLass</th>
+            <th>Price</th>
+            <th>Driver</th>
+            <th>Term</th>
+            <th>Action</th>
+        </tr>
+        <div th:each="car : ${cars}">
+            <tr>
+                <td><p th:text="${car.getId()}">id</p></td>
+                <td><p th:text="${car.getMarque()}">marque</p></td>
+                <td><p th:text="${car.getModel()}">model</p></td>
+                <td><p th:text="${car.getComfort()}">class</p></td>
+                <td><p th:text="${car.getPrice()}">price</p></td>
+                <form th:action="@{/user/make_order/{id}(id=${car.getId()})}"
+                      method="post"
+                      th:object="${car}">
+                    <td>
+                        <label class="text-info">Driver:
+                            <select name="driver">
+                                <option value="YES">YES</option>
+                                <option value="NO" selected>NO</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="text-info">Term:
+                            <input type="number" name="term" required>
+                        </label>
+                    </td>
+                    <td>
+                        <input type="submit" value="make order" class="btn btn-primary btn-sm">
+                    </td>
+                </form>
+            </tr>
+        </div>
+    </table>
 </div>
-<hr/>
+<!-- pagination -->
+<div th:if="${totalPages > 1}">
+    <div class="row col-sm-10">
+        <div class="col-sm-2">
+            Total rows: [[${totalItems}]]
+        </div>
+        <div class="col-sm-2">
+         <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+             <a class="btn btn-outline-primary"
+                     th:if="${currentPage != i}"
+                     th:href="@{/user/cars/page/{u}(u=${i})}">[[${i}]]</a>
+             <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+         </span>
+        </div>
+        <div class="col-sm-1">
+            <a class="btn btn-outline-primary"
+                    th:if="${currentPage < totalPages}"
+                    th:href="@{/user/cars/page/{z}(z=${currentPage + 1})}">Next
+            </a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+        <div class="col-sm-1">
+            <a class="btn btn-outline-primary"
+                    th:if="${currentPage < totalPages}"
+                    th:href="@{/user/cars/page/{z}(z=${totalPages})}">Last
+            </a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+</div>
+<!-- pagination -->
 <form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
+    <button type="submit" class="btn btn-secondary">Sign Out</button>
 </form>
 <footer th:insert="blocks/footer" :: footer></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

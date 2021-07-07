@@ -8,15 +8,14 @@ import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -38,9 +37,20 @@ public class AdminController {
      ******************************************************************/
 
     @GetMapping("/users")
-    @Transactional(readOnly = true)
     public String allUsers(Model model) {
-        model.addAttribute("users", userService.findAll());
+        return "redirect:/admin/users/page/1";
+    }
+    @GetMapping("/users/page/{pageNo}")
+    @Transactional(readOnly = true)
+    public String allUsers(@PathVariable("pageNo")int pageNo,
+                           Model model){
+        int pageSize=3;
+        Page<UserEntity> page = userService.findAll(pageNo, pageSize);
+        List<UserEntity> users = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("users", users);
         return "admin/userList";
     }
 
@@ -79,9 +89,21 @@ public class AdminController {
      ******************************************************************/
 
     @GetMapping("/cars/all")
+    public String allCars() {
+        return "redirect:/admin/cars/page/1";
+    }
+
+    @GetMapping("/cars/page/{pageNo}")
     @Transactional(readOnly = true)
-    public String allCars(Model model) {
-        model.addAttribute("cars", carService.findAll());
+    public String allCars(@PathVariable("pageNo")int pageNo,
+                          Model model){
+        int pageSize=3;
+        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
+        List<Car> cars = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("cars", cars);
         return "admin/cars";
     }
 
@@ -134,10 +156,23 @@ public class AdminController {
      *                          order methods                         *
      ******************************************************************/
     @GetMapping("/orders")
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public String orders(Model model) {
-        model.addAttribute("orders", orderService.findAll());
-        return "manager/orders";
+//        model.addAttribute("orders", orderService.findAll());
+        return "redirect:/admin/orders/page/1";
+    }
+    @GetMapping("/orders/page/{pageNo}")
+    @Transactional(readOnly = true)
+    public String orders(@PathVariable("pageNo")int pageNo,
+                         Model model){
+        int pageSize=3;
+        Page<Order> page = orderService.findAllPaginated(pageNo, pageSize);
+        List<Order> orders = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("orders", orders);
+        return "admin/orders";
     }
 
     @PostMapping("/order/status")
@@ -146,7 +181,7 @@ public class AdminController {
                                  @RequestParam("order_id") Long order_id) {
         Order order = orderService.getById(order_id);
         orderService.setOrderStatus(order_status, order_id);
-        if (order_status.equals(OrderStatus.FINISHED.name()) || order_status.equals(OrderStatus.REJECTED.name())) {
+        if (order_status.equals(OrderStatus.REJECTED.name())) {
             carService.setCarFree(order.getCar().getId());
         }
         return "redirect:/admin/orders";
@@ -154,10 +189,10 @@ public class AdminController {
 
     @PostMapping("/order/finish")
     @Transactional
-    public String finishOrder(@RequestParam("orderId")Long orderId,
-                              @RequestParam("carId")Long carId){
-     orderService.copyAndFinishOrder(orderId);
-     carService.setCarFree(carId);
+    public String finishOrder(@RequestParam("orderId") Long orderId,
+                              @RequestParam("carId") Long carId) {
+        orderService.copyAndFinishOrder(orderId);
+        carService.setCarFree(carId);
         return "redirect:/admin/orders";
     }
 }

@@ -4,13 +4,22 @@ import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.entity.user.Role;
 import com.example.demo.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Override
+    public Page<UserEntity> findAll(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        return userRepository.findAll(pageable);
+    }
 
     @Override
     public UserEntity findById(long id) {

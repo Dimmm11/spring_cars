@@ -1,13 +1,14 @@
 package com.example.demo.model.repository;
 
 import com.example.demo.model.entity.order.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,24 +31,29 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Modifying
     @Query(value = "UPDATE User_order SET order_status = :orderStatus WHERE id = :orderId",
             nativeQuery = true)
-    int setOrderStatus(@Param("orderStatus") String orderStatus,@Param("orderId") Long orderId);
+    int setOrderStatus(@Param("orderStatus") String orderStatus, @Param("orderId") Long orderId);
 
+    @Override
+    Page<Order> findAll(Pageable pageable);
 
-    @Query(value = "SELECT * FROM user_order WHERE user_id = :userId AND order_status NOT LIKE :orderStatus",
-            nativeQuery = true)
-    List<Order> findAllByUserAndStatus(@Param("orderStatus") String orderStatus,
-                                       @Param("userId")Long userId);
+    /**
+     * testing HQL
+     */
+    @Query("FROM Order AS o WHERE o.user.id = :userId ")
+    List<Order> findAllByUser(@Param("userId") Long userId);
 
+    @Query(value = "SELECT * FROM user_order WHERE user_id = :userId ", nativeQuery = true)
+    Page<Order> findAllByUserPaginated(@Param("userId") Long userId, Pageable pageable);
 
     Order getById(Long id);
 
-     @Modifying
-     void deleteById(Long id);
+    @Modifying
+    void deleteById(Long id);
 
-     @Modifying
-     @Query(value = "INSERT INTO finished_order(order_id, user_id, local_date_time, term, total_cost, car_id) " +
-             "SELECT id, user_id, local_date_time, term, total_cost, car_id " +
-             "FROM user_order WHERE id=:orderId",
-             nativeQuery = true)
-     int finishOrder(@Param("orderId")Long orderId);
+    @Modifying
+    @Query(value = "INSERT INTO finished_order(order_id, user_id, local_date_time, term, total_cost, car_id) " +
+            "SELECT id, user_id, local_date_time, term, total_cost, car_id " +
+            "FROM user_order WHERE id=:orderId",
+            nativeQuery = true)
+    int finishOrder(@Param("orderId") Long orderId);
 }

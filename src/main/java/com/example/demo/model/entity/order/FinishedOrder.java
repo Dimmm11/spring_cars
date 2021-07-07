@@ -16,7 +16,6 @@ public class FinishedOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private Long order_id;
 
     @ManyToOne

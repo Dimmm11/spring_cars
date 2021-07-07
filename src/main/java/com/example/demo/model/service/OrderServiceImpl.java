@@ -3,15 +3,30 @@ package com.example.demo.model.service;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Service
 public class OrderServiceImpl implements OrderService{
     @Autowired
     OrderRepository orderRepository;
+
+    @Override
+    public Page<Order> findAllPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Order> findAllByUserPaginated(Long userId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        return orderRepository.findAllByUserPaginated(userId, pageable);
+    }
 
     @Override
     public void carOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal total_cost, LocalDateTime localDateTime) {
@@ -44,8 +59,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<Order> findAllByUserAndStatus(String orderStatus, Long userId){
-        return orderRepository.findAllByUserAndStatus(orderStatus, userId);
+    public List<Order> findAllByUser(Long userId){
+        return orderRepository.findAllByUser(userId);
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 public class MainController {
 
@@ -24,7 +23,9 @@ public class MainController {
     @Transactional(readOnly = true)
     public String menu() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth!=null && auth.getAuthorities().stream().anyMatch(a->a.getAuthority().equals("ADMIN"))){
+        if(auth!=null
+                && auth.getAuthorities().stream()
+                .anyMatch(a->a.getAuthority().equals("ADMIN"))){
             return "redirect:/admin/panel";
         }
         return "menu";

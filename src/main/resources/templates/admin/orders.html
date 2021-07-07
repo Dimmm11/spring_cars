@@ -4,27 +4,19 @@
 <head>
     <title>Orders</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
-    <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <header th:insert="blocks/adminHeader" :: header></header>
-<table>
+
+<div class="container my-2">
+    <h1>Orders</h1>
+
+    <table border="1" class="table table-striped table-responsive-md">
     <tr>
         <th>Order id</th>
         <th>User</th>
@@ -52,27 +44,55 @@
                         <option value="CONFIRMED">confirmed</option>
                         <option value="REJECTED">rejected</option>
                         <option value="CHECKING">checking</option>
-                        <option value="FINISHED">finished</option>
                     </select>
                     <input type="hidden" name="order_id" th:value="${user_order.getId()}">
-                    <input type="submit" value="set">
+                    <input type="submit" value="set" class="btn btn-primary btn-sm">
                 </form>
             </td>
             <td>
                 <form method="post" th:action="@{/admin/order/finish}">
                     <input type="hidden" name="orderId" th:value="${user_order.getId()}">
                     <input type="hidden" name="carId" th:value="${user_order.getCar().getId()}">
-                    <input type="submit" value="finish">
+                    <input type="submit" value="finish" class="btn btn-success">
                 </form>
             </td>
         </tr>
     </div>
 </table>
-<form th:action="@{/admin/cars/add}" method="get">
-    <input type="submit" value="add new car">
-</form>
+</div>
+<!-- pagination -->
+<div th:if="${totalPages > 1}">
+    <div class="row col-sm-10">
+        <div class="col-sm-2">
+            Total rows: [[${totalItems}]]
+        </div>
+        <div class="col-sm-2">
+            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a class="btn btn-outline-primary"
+                   th:if="${currentPage != i}"
+                   th:href="@{/admin/orders/page/{u}(u=${i})}">[[${i}]]</a>
+             <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+             </span>
+        </div>
+        <div class="col-sm-1">
+            <a class="btn btn-outline-primary"
+               th:if="${currentPage < totalPages}"
+               th:href="@{/admin/orders/page/{z}(z=${currentPage + 1})}">Next
+            </a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+        <div class="col-sm-1">
+            <a class="btn btn-outline-primary"
+               th:if="${currentPage < totalPages}"
+               th:href="@{/admin/orders/page/{z}(z=${totalPages})}">Last
+            </a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+</div>
+<!-- pagination -->
 <form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
+    <input type="submit" value="Sign Out" class="btn btn-secondary"/>
 </form>
 <footer th:insert="blocks/footer" :: footer></footer>
 </body>

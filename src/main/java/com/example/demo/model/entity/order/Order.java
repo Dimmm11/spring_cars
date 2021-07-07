@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "user_order")
 public class Order {
     @Id
@@ -44,7 +43,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus order_status;
 
-    @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
     private LocalDateTime localDateTime;
 
 }

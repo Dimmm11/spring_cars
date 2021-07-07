@@ -2,8 +2,7 @@ package com.example.demo.model.service;
 
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.car.CarComfort;
-import com.example.demo.model.entity.car.CarStatus;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,4 +16,7 @@ public interface CarService {
     List<Car> findFreeCars();
     void orderCar(Long id);
     int setCarFree(Long carId);
+    // pagination
+    Page<Car> findAllPaginated(int pageNo, int pageSize);
+    Page<Car> findFreeCarsPaginated(int pageNo, int pageSize);
 }
