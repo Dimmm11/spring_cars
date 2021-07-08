@@ -15,14 +15,17 @@ public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Size(min = 2,max = 12,message = "length should be between 2 and 12 symbols")
     @NotBlank(message = "required data")
+    @Column(name = "marque")
     private String marque;
 
     @Size(max=12, message = "max length 12 symbols")
     @NotBlank(message = "required data")
+    @Column(name = "model")
     private String model;
 
     @NotNull(message ="required data")
@@ -30,9 +33,11 @@ public class Car {
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "comfort")
     private CarComfort comfort;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "car_status")
     private CarStatus car_status;
 
 }

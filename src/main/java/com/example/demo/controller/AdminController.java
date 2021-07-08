@@ -1,12 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.controller.securingWeb.HibernateSessionFactory;
 import com.example.demo.model.entity.car.Car;
+import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.entity.order.OrderStatus;
 import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -37,13 +42,18 @@ public class AdminController {
      ******************************************************************/
 
     @GetMapping("/users")
-    public String allUsers(Model model) {
+    public String allUsers() {
         return "redirect:/admin/users/page/1";
     }
+
     @GetMapping("/users/page/{pageNo}")
     @Transactional(readOnly = true)
     public String allUsers(@PathVariable("pageNo")int pageNo,
                            Model model){
+        /////////////////
+//        Session session = new Configuration().configure().buildSessionFactory().openSession();
+
+        /////////////////
         int pageSize=3;
         Page<UserEntity> page = userService.findAll(pageNo, pageSize);
         List<UserEntity> users = page.getContent();
@@ -97,6 +107,13 @@ public class AdminController {
     @Transactional(readOnly = true)
     public String allCars(@PathVariable("pageNo")int pageNo,
                           Model model){
+        ///////////////////////// Hibernate session test /////////////////////////////
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        List carList = session.createQuery("FROM Car").list();
+        t.commit();
+        session.close();
+        //////////////////////////////////////////////////////////////////////////////
         int pageSize=3;
         Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
         List<Car> cars = page.getContent();
@@ -119,6 +136,7 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             return "admin/addCar";
         }
+        car.setCar_status(CarStatus.FREE);
         carService.addCar(car);
         return "redirect:/admin/cars/all";
     }
@@ -156,9 +174,7 @@ public class AdminController {
      *                          order methods                         *
      ******************************************************************/
     @GetMapping("/orders")
-//    @Transactional(readOnly = true)
-    public String orders(Model model) {
-//        model.addAttribute("orders", orderService.findAll());
+    public String orders() {
         return "redirect:/admin/orders/page/1";
     }
     @GetMapping("/orders/page/{pageNo}")

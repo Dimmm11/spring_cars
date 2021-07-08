@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.entity.car.Car;
-import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.entity.user.Role;
 import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -22,7 +20,6 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -47,8 +44,8 @@ public class UserController {
     @GetMapping("/cars/page/{pageNo}")
     @Transactional(readOnly = true)
     public String findCarsPaginated(@PathVariable("pageNo") int pageNo,
-                                    Model model){
-        int pageSize=3;
+                                    Model model) {
+        int pageSize = 3;
         Page<Car> page = carService.findFreeCarsPaginated(pageNo, pageSize);
         List<Car> freeCars = page.getContent();
         model.addAttribute("currentPage", pageNo);
@@ -57,6 +54,7 @@ public class UserController {
         model.addAttribute("cars", freeCars);
         return "cars/allCars";
     }
+
     /******************************************************************
      *                             order                              *
      ******************************************************************/
@@ -67,14 +65,15 @@ public class UserController {
 
         return "redirect:/user/orders/page/1";
     }
+
     @GetMapping("/orders/page/{pageNo}")
     @Transactional(readOnly = true)
-    public String findOrdersPaginated(@PathVariable("pageNo")int pageNo,
+    public String findOrdersPaginated(@PathVariable("pageNo") int pageNo,
                                       Principal principal,
-                                      Model model){
+                                      Model model) {
         UserEntity user = userService.findByUsername(principal.getName());
-        int pageSize=3;
-        Page<Order> page = orderService.findAllByUserPaginated(user.getId() , pageNo, pageSize);
+        int pageSize = 3;
+        Page<Order> page = orderService.findAllByUserPaginated(user.getId(), pageNo, pageSize);
         List<Order> userOrders = page.getContent();
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());

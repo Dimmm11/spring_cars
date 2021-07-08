@@ -20,12 +20,11 @@ public class MainController {
     }
 
     @GetMapping("/menu")
-    @Transactional(readOnly = true)
     public String menu() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth!=null
+        if (auth != null
                 && auth.getAuthorities().stream()
-                .anyMatch(a->a.getAuthority().equals("ADMIN"))){
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
             return "redirect:/admin/panel";
         }
         return "menu";
