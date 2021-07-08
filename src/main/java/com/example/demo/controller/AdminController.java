@@ -11,6 +11,7 @@ import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -50,10 +51,6 @@ public class AdminController {
     @Transactional(readOnly = true)
     public String allUsers(@PathVariable("pageNo")int pageNo,
                            Model model){
-        /////////////////
-//        Session session = new Configuration().configure().buildSessionFactory().openSession();
-
-        /////////////////
         int pageSize=3;
         Page<UserEntity> page = userService.findAll(pageNo, pageSize);
         List<UserEntity> users = page.getContent();
@@ -107,20 +104,31 @@ public class AdminController {
     @Transactional(readOnly = true)
     public String allCars(@PathVariable("pageNo")int pageNo,
                           Model model){
-        ///////////////////////// Hibernate session test /////////////////////////////
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        Transaction t = session.beginTransaction();
-        List carList = session.createQuery("FROM Car").list();
-        t.commit();
-        session.close();
+        ///////////////////////// Hibernate test /////////////////////////////
+        try(Session session = HibernateSessionFactory.getSessionFactory().openSession();){
+            // hibernate pagination
+            int pageSize = 3;
+            Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
+            Long totalItems =(Long) rowCountQuery.uniqueResult();
+            int totalPages = (int) (Math.ceil(totalItems/pageSize));
+            Query selectQuery = session.createQuery("FROM Car");
+            selectQuery.setFirstResult((pageNo-1)*pageSize);
+            selectQuery.setMaxResults(pageSize);
+            List<Car> cars = selectQuery.list(); // Do we need to cast (List<Car>) ???
+            model.addAttribute("currentPage", pageNo);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalItems", totalItems);
+            model.addAttribute("cars", cars);
+        }
+
         //////////////////////////////////////////////////////////////////////////////
-        int pageSize=3;
-        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
-        List<Car> cars = page.getContent();
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("cars", cars);
+//        int pageSize=3;
+//        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
+//        List<Car> cars = page.getContent();
+//        model.addAttribute("currentPage", pageNo);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//        model.addAttribute("cars", cars);
         return "admin/cars";
     }
 
