@@ -33,6 +33,7 @@ EDIT USER INFO
                               th:field="*{email}"
                               required/> </label>
     </div>
+    <input type="hidden" name="active" th:value="*{active}">
     <input type="hidden" th:value="*{role}" th:name="role">
     <div><input type="submit" value="update"/></div>
 </form>

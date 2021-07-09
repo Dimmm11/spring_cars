@@ -7,6 +7,7 @@ import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    private static final Logger logger = Logger.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -31,6 +36,14 @@ public class UserController {
     @Autowired
     private OrderService orderService;
 
+    /******************************************************************
+     *                       Exception handling                       *
+     ******************************************************************/
+    @ExceptionHandler({Exception.class})
+    public String handleError(Exception ex) {
+        logger.error(ex.getMessage(), ex);
+        return "error";
+    }
 
     /******************************************************************
      *                             cars                               *
@@ -62,7 +75,6 @@ public class UserController {
     @GetMapping("/orders")
     @Transactional(readOnly = true)
     public String userOrders() {
-
         return "redirect:/user/orders/page/1";
     }
 
@@ -93,9 +105,11 @@ public class UserController {
         Long userId = userEntity.getId();
 
         Car car = carService.findCarById(id);
-        orderService.carOrder(userId, id, driver, term, car.getPrice().multiply(term),
+        int orderId = orderService.makeOrder(userId, id, driver, term, car.getPrice().multiply(term),
                 LocalDateTime.now().withSecond(0));
         carService.orderCar(id);
+        // last inserted row in multithreading ???
+        logger.info(MessageFormat.format("user: {0} ordered car: {1} order id: {2}", userEntity.getId(), car.getId(), orderId));
         model.addAttribute("orders", orderService.findByUser_Id(userId));
         return "redirect:/user/orders";
     }
@@ -106,6 +120,7 @@ public class UserController {
                               @RequestParam("carId") Long carId) {
         carService.setCarFree(carId);
         orderService.deleteById(orderId);
+        logger.info(MessageFormat.format("order canceled:{0}, car set FREE:{1}", orderId, carId));
         return "redirect:/user/orders";
     }
 
@@ -133,6 +148,7 @@ public class UserController {
         user.setActive(true);
         user.setRole(Role.USER);
         userService.save(user);
+        logger.info("registered user: "+ user);
         return "redirect:/login";
     }
 }

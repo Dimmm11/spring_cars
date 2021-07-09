@@ -29,8 +29,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void carOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal total_cost, LocalDateTime localDateTime) {
-       orderRepository.carOrder(userId, carId, driver, term, total_cost, localDateTime);
+    public int makeOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal total_cost, LocalDateTime localDateTime) {
+       orderRepository.makeOrder(userId, carId, driver, term, total_cost, localDateTime);
+       return orderRepository.lastInsertedRow();
     }
 
     @Override

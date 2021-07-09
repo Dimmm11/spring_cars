@@ -19,12 +19,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "INSERT INTO user_order (user_id, car_id, driver, term, total_cost, order_status, local_date_time) " +
             "VALUES (:userId, :carId, :driver, :term, :total_cost, 'CHECKING', :dateTime)",
             nativeQuery = true)
-    void carOrder(@Param("userId") Long userId,
-                  @Param("carId") Long carId,
-                  @Param("driver") Boolean driver,
-                  @Param("term") BigDecimal term,
-                  @Param("total_cost") BigDecimal total_cost,
-                  @Param("dateTime") LocalDateTime localDate);
+    void makeOrder(@Param("userId") Long userId,
+                   @Param("carId") Long carId,
+                   @Param("driver") Boolean driver,
+                   @Param("term") BigDecimal term,
+                   @Param("total_cost") BigDecimal total_cost,
+                   @Param("dateTime") LocalDateTime localDate);
 
     List<Order> findByUser_Id(Long id);
 
@@ -56,4 +56,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "FROM user_order WHERE id=:orderId",
             nativeQuery = true)
     int finishOrder(@Param("orderId") Long orderId);
+
+    @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
+    int lastInsertedRow();
 }

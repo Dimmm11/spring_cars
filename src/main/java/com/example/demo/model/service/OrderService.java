@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
-    void carOrder(Long userId,
-                  Long carId,
-                  Boolean driver,
-                  BigDecimal term,
-                  BigDecimal total_cost,
-                  LocalDateTime localDateTime);
+    int makeOrder(Long userId,
+                   Long carId,
+                   Boolean driver,
+                   BigDecimal term,
+                   BigDecimal total_cost,
+                   LocalDateTime localDateTime);
 
     List<Order> findByUser_Id(Long id);
 
