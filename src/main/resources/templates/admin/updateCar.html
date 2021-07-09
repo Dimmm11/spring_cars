@@ -18,7 +18,10 @@
         <div id="login-row" class="row justify-content-center align-items-center">
             <div id="login-column" class="col-md-6">
                 <div id="login-box" class="col-md-12">
-                    <form id="login-form" class="form" th:action="@{/admin/cars/update}" method="post" th:object="${car}">
+                    <form id="login-form" class="form"
+                          th:action="@{/admin/cars/update}"
+                          method="post"
+                          th:object="${car}">
                         <h3 class="text-center text-info">Edit</h3>
 
                         <div class="form-group">
@@ -54,6 +57,7 @@
                             </div>
                             <label class="text-info" style="font-size: large"> Price: <input type="number" name="price" th:field="*{price}" class="form-control"/> </label>
                         </div>
+                        <input type="hidden" name="car_status" th:value="*{car_status}">
                         <input type="hidden" name="id" th:value="*{id}">
 
                         <div class="form-group">

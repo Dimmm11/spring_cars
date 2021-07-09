@@ -24,9 +24,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+    private static final Logger logger = Logger.getLogger(AdminController.class);
 
     @Autowired
     private CarService carService;
@@ -44,7 +48,8 @@ public class AdminController {
      *                       Exception handling                       *
      ******************************************************************/
     @ExceptionHandler({Exception.class})
-    public String carError() {
+    public String carError(Exception ex) {
+        logger.error(ex.getMessage(), ex);
         return "error";
     }
 
@@ -86,6 +91,7 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             return "admin/updateUser";
         }
+        logger.info("userEdit: " + user);
         userService.updateUser(user.getUsername(),
                 user.getPassword(),
                 user.getEmail(),
@@ -98,6 +104,7 @@ public class AdminController {
     @Transactional
     public String deleteUser(@PathVariable("id") long id) {
         userService.deleteById(id);
+        logger.info("delete user: "+id);
         return "redirect:/admin/users";
     }
 
@@ -155,6 +162,7 @@ public class AdminController {
         }
         car.setCar_status(CarStatus.FREE);
         carService.addCar(car);
+        logger.info("add Car: "+car);
         return "redirect:/admin/cars/all";
     }
 
@@ -162,16 +170,20 @@ public class AdminController {
     @Transactional(readOnly = true)
     public String updateCar(@PathVariable("id") long id, Model model) {
         model.addAttribute("car", carService.findCarById(id));
+
         return "admin/updateCar";
     }
 
     @PostMapping("/cars/update")
     @Transactional
     public String updateCar(@ModelAttribute("car") @Valid Car car,
-                            BindingResult bindingResult) {
+                            BindingResult bindingResult,
+                            @RequestParam("car_status")CarStatus carStatus) {
+        car.setCar_status(carStatus);
         if (bindingResult.hasErrors()) {
             return "admin/updateCar";
         }
+        logger.info("update Car: "+car);
         carService.updateCar(car.getMarque(),
                 car.getModel(),
                 car.getComfort(),
@@ -184,6 +196,7 @@ public class AdminController {
     @Transactional
     public String deleteCar(@PathVariable("id") long id) {
         carService.deleteCar(id);
+        logger.info("delete Car: "+id);
         return "redirect:/admin/cars/all";
     }
 
@@ -217,7 +230,9 @@ public class AdminController {
         orderService.setOrderStatus(order_status, order_id);
         if (order_status.equals(OrderStatus.REJECTED.name())) {
             carService.setCarFree(order.getCar().getId());
+            logger.info("set Car FREE: "+order.getCar().getId());
         }
+        logger.info("set status: "+order_status+", order: "+order_id);
         return "redirect:/admin/orders";
     }
 
@@ -226,7 +241,9 @@ public class AdminController {
     public String finishOrder(@RequestParam("orderId") Long orderId,
                               @RequestParam("carId") Long carId) {
         orderService.copyAndFinishOrder(orderId);
+        logger.info("copied order to Finished: "+orderId);
         carService.setCarFree(carId);
+        logger.info("set car FREE: "+carId);
         return "redirect:/admin/orders";
     }
 }
