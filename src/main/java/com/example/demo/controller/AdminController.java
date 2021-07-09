@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.controller.securingWeb.HibernateSessionFactory;
+import com.example.demo.exception.ApiRequestException;
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
@@ -26,6 +27,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
     @Autowired
     private CarService carService;
     @Autowired
@@ -39,6 +41,14 @@ public class AdminController {
     }
 
     /******************************************************************
+     *                       Exception handling                       *
+     ******************************************************************/
+    @ExceptionHandler({Exception.class})
+    public String carError() {
+        return "error";
+    }
+
+    /******************************************************************
      *                           user methods                         *
      ******************************************************************/
 
@@ -49,9 +59,9 @@ public class AdminController {
 
     @GetMapping("/users/page/{pageNo}")
     @Transactional(readOnly = true)
-    public String allUsers(@PathVariable("pageNo")int pageNo,
-                           Model model){
-        int pageSize=3;
+    public String allUsers(@PathVariable("pageNo") int pageNo,
+                           Model model) {
+        int pageSize = 3;
         Page<UserEntity> page = userService.findAll(pageNo, pageSize);
         List<UserEntity> users = page.getContent();
         model.addAttribute("currentPage", pageNo);
@@ -100,19 +110,19 @@ public class AdminController {
         return "redirect:/admin/cars/page/1";
     }
 
+
     @GetMapping("/cars/page/{pageNo}")
     @Transactional(readOnly = true)
-    public String allCars(@PathVariable("pageNo")int pageNo,
-                          Model model){
-        ///////////////////////// Hibernate test /////////////////////////////
-        try(Session session = HibernateSessionFactory.getSessionFactory().openSession();){
-            // hibernate pagination
+    public String allCars(@PathVariable("pageNo") int pageNo,
+                          Model model) {
+        ///////////////////////// Hibernate pagination /////////////////////////////
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession();) {
             int pageSize = 3;
             Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
-            Long totalItems =(Long) rowCountQuery.uniqueResult();
-            int totalPages = (int) (Math.ceil(totalItems/pageSize));
+            Long totalItems = (Long) rowCountQuery.uniqueResult();
+            int totalPages = (int) (Math.ceil((double) totalItems / pageSize));
             Query selectQuery = session.createQuery("FROM Car");
-            selectQuery.setFirstResult((pageNo-1)*pageSize);
+            selectQuery.setFirstResult((pageNo - 1) * pageSize);
             selectQuery.setMaxResults(pageSize);
             List<Car> cars = selectQuery.list(); // Do we need to cast (List<Car>) ???
             model.addAttribute("currentPage", pageNo);
@@ -120,8 +130,7 @@ public class AdminController {
             model.addAttribute("totalItems", totalItems);
             model.addAttribute("cars", cars);
         }
-
-        //////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////jpa pagination/////////////////////////////////////
 //        int pageSize=3;
 //        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
 //        List<Car> cars = page.getContent();
@@ -185,11 +194,12 @@ public class AdminController {
     public String orders() {
         return "redirect:/admin/orders/page/1";
     }
+
     @GetMapping("/orders/page/{pageNo}")
     @Transactional(readOnly = true)
-    public String orders(@PathVariable("pageNo")int pageNo,
-                         Model model){
-        int pageSize=3;
+    public String orders(@PathVariable("pageNo") int pageNo,
+                         Model model) {
+        int pageSize = 3;
         Page<Order> page = orderService.findAllPaginated(pageNo, pageSize);
         List<Order> orders = page.getContent();
         model.addAttribute("currentPage", pageNo);
