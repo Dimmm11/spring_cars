@@ -5,7 +5,13 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+/**
+ * singleton to get hibernate session
+ */
 public class HibernateSessionFactory {
+
+    private HibernateSessionFactory(){}
+
     private static SessionFactory sessionFactory = buildSessionFactory();
 
     protected static SessionFactory buildSessionFactory() {
@@ -25,7 +31,6 @@ public class HibernateSessionFactory {
         }
         return sessionFactory;
     }
-
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;

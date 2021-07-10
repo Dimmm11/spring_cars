@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+
     UserEntity findByUsername(String username);
 
     @Modifying
@@ -21,4 +22,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Override
     Page<UserEntity> findAll(Pageable pageable);
 
+    @Query(value = "SELECT ROW_COUNT()", nativeQuery = true)
+    int rowCount();
 }

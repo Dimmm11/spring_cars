@@ -50,6 +50,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Modifying
     void deleteById(Long id);
 
+    @Query(value = "SELECT ROW_COUNT()",nativeQuery = true)
+    int rowCount();
+
     @Modifying
     @Query(value = "INSERT INTO finished_order(order_id, user_id, local_date_time, term, total_cost, car_id) " +
             "SELECT id, user_id, local_date_time, term, total_cost, car_id " +

@@ -1,7 +1,7 @@
 package com.example.demo.model.service;
 
-import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.entity.user.Role;
+import com.example.demo.model.entity.user.UserEntity;
 import com.example.demo.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     UserRepository userRepository;
 
@@ -23,7 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findById(long id) {
-        return userRepository.findById(id).get();
+//        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(()-> new RuntimeException("no user by id:"+id));
     }
 
     @Override
@@ -37,8 +39,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public int deleteById(long id) {
         userRepository.deleteById(id);
+       return userRepository.rowCount();
     }
 
     @Override
@@ -47,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserEntity userEntity) {
-        userRepository.save(userEntity);
+    public UserEntity save(UserEntity userEntity) {
+       return userRepository.save(userEntity);
     }
 }

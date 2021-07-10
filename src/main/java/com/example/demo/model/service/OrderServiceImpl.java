@@ -55,8 +55,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         orderRepository.deleteById(id);
+        return orderRepository.rowCount();
     }
 
     @Override
@@ -65,8 +66,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void copyAndFinishOrder(Long orderId) {
+    public int copyAndFinishOrder(Long orderId) {
         orderRepository.finishOrder(orderId);
         orderRepository.deleteById(orderId);
+        return orderRepository.rowCount();
     }
 }

@@ -24,11 +24,11 @@ public interface OrderService {
 
     Order getById( Long id);
 
-    void deleteById(Long id);
+    int deleteById(Long id);
 
     List<Order> findAllByUser(Long userId);
 
-    void copyAndFinishOrder(Long orderId);
+    int copyAndFinishOrder(Long orderId);
 
     Page<Order> findAllByUserPaginated(Long userId, int pageNo, int pageSize);
 

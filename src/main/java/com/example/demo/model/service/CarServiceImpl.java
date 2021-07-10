@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -51,8 +50,9 @@ public class CarServiceImpl implements CarService{
     }
 
     @Override
-    public void deleteCar(long id) {
+    public int deleteCar(long id) {
         carRepository.deleteById(id);
+        return carRepository.rowCount();
     }
 
     @Override
@@ -61,8 +61,8 @@ public class CarServiceImpl implements CarService{
     }
 
     @Override
-    public void orderCar(Long id) {
-        carRepository.orderCar(id);
+    public int orderCar(Long id) {
+        return carRepository.orderCar(id);
     }
 
     @Override

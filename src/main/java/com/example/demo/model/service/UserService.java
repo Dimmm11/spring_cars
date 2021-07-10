@@ -11,9 +11,9 @@ public interface UserService{
    UserEntity findById(long id);
    List<UserEntity> findAll();
    int updateUser(String username, String password, String email, Role role, long id);
-   void deleteById(long id);
+   int deleteById(long id);
    UserEntity findByUsername(String username);
-   void save(UserEntity userEntity);
+   UserEntity save(UserEntity userEntity);
 
    Page<UserEntity> findAll(int pageNo, int pageSize);
 }

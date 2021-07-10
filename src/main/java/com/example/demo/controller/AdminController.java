@@ -99,7 +99,7 @@ public class AdminController {
     @PostMapping("/users/delete/{id}")
     @Transactional
     public String deleteUser(@PathVariable("id") long id) {
-        userService.deleteById(id);
+       userService.deleteById(id);
         logger.info(String.format("delete user: %d", id));
         return "redirect:/admin/users";
     }
@@ -190,7 +190,7 @@ public class AdminController {
     @PostMapping("/cars/delete/{id}")
     @Transactional
     public String deleteCar(@PathVariable("id") long id) {
-        carService.deleteCar(id);
+      int a =  carService.deleteCar(id);
         logger.info(String.format("delete car: %d", id));
         return "redirect:/admin/cars/all";
     }

@@ -11,10 +11,10 @@ public interface CarService {
     Car findCarById(long id);
     Car addCar(Car car);
     int updateCar(String marque, String model, CarComfort comfort, BigDecimal price, long id);
-    void deleteCar(long id);
+    int deleteCar(long id);
     List<Car> findAll();
     List<Car> findFreeCars();
-    void orderCar(Long id);
+    int orderCar(Long id);
     int setCarFree(Long carId);
     // pagination
     Page<Car> findAllPaginated(int pageNo, int pageSize);

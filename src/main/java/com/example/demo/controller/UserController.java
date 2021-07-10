@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -107,7 +106,7 @@ public class UserController {
         Car car = carService.findCarById(id);
         int orderId = orderService.makeOrder(userId, id, driver, term, car.getPrice().multiply(term),
                 LocalDateTime.now().withSecond(0));
-        carService.orderCar(id);
+        int affectedRows = carService.orderCar(id);
         // last inserted row in multithreading ???
         logger.info(MessageFormat.format("user: {0} ordered car: {1} order id: {2}", userEntity.getId(), car.getId(), orderId));
         model.addAttribute("orders", orderService.findByUser_Id(userId));
