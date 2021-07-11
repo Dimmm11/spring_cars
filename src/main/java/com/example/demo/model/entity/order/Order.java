@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -32,17 +33,22 @@ public class Order {
     @JoinColumn(name = "car_id")
     private Car car;
 
+    @Column(name = "driver")
     private Boolean driver;
 
     @Min(value = 1)
+    @Column(name = "term")
     private BigDecimal term;
 
     @Min(value = 0)
+    @Column(name = "total_cost")
     private BigDecimal total_cost;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
     private OrderStatus order_status;
 
+    @Column(name = "local_date_time")
     private LocalDateTime localDateTime;
 
 }

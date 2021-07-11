@@ -18,22 +18,28 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "username required")
     @Size(min=1, max=8)
+    @Column(name = "username")
     private String username;
 
     @NotBlank(message = "password required")
     @Size(min=1, max=8)
+    @Column(name = "password")
     private String password;
 
     @Email
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "active")
     private boolean active;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
 

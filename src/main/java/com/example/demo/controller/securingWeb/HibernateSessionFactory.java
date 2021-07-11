@@ -12,7 +12,7 @@ public class HibernateSessionFactory {
 
     private HibernateSessionFactory(){}
 
-    private static SessionFactory sessionFactory = buildSessionFactory();
+    private static SessionFactory sessionFactory;
 
     protected static SessionFactory buildSessionFactory() {
         // A SessionFactory is set up once for an application!
@@ -33,6 +33,9 @@ public class HibernateSessionFactory {
     }
 
     public static SessionFactory getSessionFactory() {
+        if(sessionFactory==null){
+            sessionFactory = buildSessionFactory();
+        }
         return sessionFactory;
     }
 

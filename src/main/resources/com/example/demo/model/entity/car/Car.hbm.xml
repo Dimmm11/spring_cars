@@ -11,7 +11,18 @@
         <property name="marque" column="marque" type="string"/>
         <property name="model" column="model" type="string"/>
         <property name="price" column="price" type="java.math.BigDecimal"/>
-        <property name="comfort" column="comfort" type="string"/>
-        <property name="car_status" column="car_status" type="string"/>
+        <property name="comfort">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.example.demo.model.entity.car.CarComfort</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
+        <property name="car_status">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.example.demo.model.entity.car.CarStatus</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
     </class>
+
 </hibernate-mapping>

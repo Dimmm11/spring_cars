@@ -6,6 +6,7 @@ import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.entity.order.OrderStatus;
 import com.example.demo.model.entity.user.UserEntity;
+import com.example.demo.model.hibernateLearn.dao.CarDAO;
 import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
@@ -34,6 +35,7 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private OrderService orderService;
+
 
     @GetMapping("/panel")
     public String panel() {
@@ -119,7 +121,13 @@ public class AdminController {
     public String allCars(@PathVariable("pageNo") int pageNo,
                           Model model) {
         ///////////////////////// Hibernate pagination /////////////////////////////
-        try (Session session = HibernateSessionFactory.getSessionFactory().openSession();) {
+
+
+
+//         List<Car> hibernateTest = new CarDAO().findFreeCars();
+
+        // since Hibernate-5 Session extends Autocloseable
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
             int pageSize = 3;
             Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
             Long totalItems = (Long) rowCountQuery.uniqueResult();
@@ -127,7 +135,7 @@ public class AdminController {
             Query selectQuery = session.createQuery("FROM Car");
             selectQuery.setFirstResult((pageNo - 1) * pageSize);
             selectQuery.setMaxResults(pageSize);
-            List<Car> cars = selectQuery.list(); // Do we need to cast (List<Car>) ???
+            List<Car> cars = selectQuery.list();
             model.addAttribute("currentPage", pageNo);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("totalItems", totalItems);

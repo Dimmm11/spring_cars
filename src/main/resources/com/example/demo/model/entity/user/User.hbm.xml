@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping">
+
+    <class name="com.example.demo.model.entity.user.UserEntity" table="users">
+        <id name="id" type="java.lang.Long" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="username" column="username" type="string"/>
+        <property name="active" column="active" type="boolean"/>
+        <property name="email" column="email" type="string"/>
+        <property name="password" column="password" type="string"/>
+        <property name="role">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.example.demo.model.entity.user.Role</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
+    </class>
+
+</hibernate-mapping>
