@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "INSERT INTO user_order (user_id, car_id, driver, term, total_cost, order_status, local_date_time) " +
             "VALUES (:userId, :carId, :driver, :term, :total_cost, 'CHECKING', :dateTime)",
             nativeQuery = true)
-    void makeOrder(@Param("userId") Long userId,
+    int makeOrder(@Param("userId") Long userId,
                    @Param("carId") Long carId,
                    @Param("driver") Boolean driver,
                    @Param("term") BigDecimal term,

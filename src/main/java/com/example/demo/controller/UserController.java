@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.controller.securingWeb.HibernateSessionFactory;
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.entity.user.Role;
@@ -12,16 +11,12 @@ import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -35,6 +30,9 @@ public class UserController {
 
     private static final Logger logger = Logger.getLogger(UserController.class);
 
+    /**
+     * JPA Service
+     */
     @Autowired
     private UserService userService;
     @Autowired
@@ -43,7 +41,7 @@ public class UserController {
     private OrderService orderService;
 
     /**
-     * testing Hibernate Service layer
+     * Hibernate Service
      */
     @Autowired
     private HibernateCarService hibernateCarService;
@@ -51,7 +49,6 @@ public class UserController {
     private HibernateUserService hibernateUserService;
     @Autowired
     private HibernateOrderService hibernateOrderService;
-
 
     /******************************************************************
      *                       Exception handling                       *
@@ -66,13 +63,11 @@ public class UserController {
      *                             cars                               *
      ******************************************************************/
     @GetMapping("/cars")
-    @Transactional(readOnly = true)
     public String allCars() {
         return "redirect:/user/cars/page/1";
     }
 
     @GetMapping("/cars/page/{pageNo}")
-    @Transactional(readOnly = true)
     public String findCarsPaginated(@PathVariable("pageNo") int pageNo,
                                     Model model) {
         // hibernate pagination
@@ -105,12 +100,9 @@ public class UserController {
     }
 
     @GetMapping("/orders/page/{pageNo}")
-    @Transactional(readOnly = true)
     public String findOrdersPaginated(@PathVariable("pageNo") int pageNo,
                                       Model model,
-                                      Principal principal
-    ) {
-
+                                      Principal principal) {
         UserEntity user = hibernateUserService.findByUsername(principal.getName());
         int pageSize = 3;
         Long totalRows = (long) (hibernateOrderService.findByUserId(user.getId()).size());
@@ -120,6 +112,7 @@ public class UserController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalItems", totalRows);
         model.addAttribute("orders", userOrders);
+        // jpa pagination
 //        Page<Order> page = orderService.findAllByUserPaginated(user.getId(), pageNo, pageSize);
 //        List<Order> userOrders = page.getContent();
 //        model.addAttribute("currentPage", pageNo);
@@ -130,7 +123,6 @@ public class UserController {
     }
 
     @PostMapping("/make_order/{id}")
-    @Transactional
     public String carOrder(@PathVariable("id") Long id,
                            Principal principal,
                            Model model,
@@ -150,7 +142,6 @@ public class UserController {
     }
 
     @PostMapping("/cancel")
-    @Transactional
     public String cancelOrder(@RequestParam("orderId") Long orderId,
                               @RequestParam("carId") Long carId) {
         hibernateOrderService.cancelOrder(orderId, carId);
@@ -167,7 +158,6 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    @Transactional
     public String addUser(@ModelAttribute("user") @Valid UserEntity user,
                           BindingResult bindingResult,
                           Model model) {

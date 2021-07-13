@@ -1,18 +1,14 @@
 package com.example.demo.controller;
 
-import com.example.demo.controller.securingWeb.HibernateSessionFactory;
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
 import com.example.demo.model.entity.order.OrderStatus;
 import com.example.demo.model.entity.user.UserEntity;
-import com.example.demo.model.hibernateLearn.dao.CarDAO;
 import com.example.demo.model.service.CarService;
 import com.example.demo.model.service.OrderService;
 import com.example.demo.model.service.UserService;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -61,7 +57,6 @@ public class AdminController {
     }
 
     @GetMapping("/users/page/{pageNo}")
-    @Transactional(readOnly = true)
     public String allUsers(@PathVariable("pageNo") int pageNo,
                            Model model) {
         int pageSize = 3;
@@ -75,7 +70,6 @@ public class AdminController {
     }
 
     @GetMapping("/users/update/{id}")
-    @Transactional(readOnly = true)
     public String updateUser(@PathVariable("id") long id,
                              Model model) {
         model.addAttribute("user", userService.findById(id));
@@ -83,7 +77,6 @@ public class AdminController {
     }
 
     @PostMapping("/users/update")
-    @Transactional
     public String updateUser(@ModelAttribute("user") @Valid UserEntity user,
                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -99,7 +92,6 @@ public class AdminController {
     }
 
     @PostMapping("/users/delete/{id}")
-    @Transactional
     public String deleteUser(@PathVariable("id") long id) {
        userService.deleteById(id);
         logger.info(String.format("delete user: %d", id));
@@ -117,38 +109,33 @@ public class AdminController {
 
 
     @GetMapping("/cars/page/{pageNo}")
-    @Transactional(readOnly = true)
     public String allCars(@PathVariable("pageNo") int pageNo,
                           Model model) {
-        ///////////////////////// Hibernate pagination /////////////////////////////
-
-
-
-//         List<Car> hibernateTest = new CarDAO().findFreeCars();
-
-        // since Hibernate-5 Session extends Autocloseable
-        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            int pageSize = 3;
-            Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
-            Long totalItems = (Long) rowCountQuery.uniqueResult();
-            int totalPages = (int) (Math.ceil((double) totalItems / pageSize));
-            Query selectQuery = session.createQuery("FROM Car");
-            selectQuery.setFirstResult((pageNo - 1) * pageSize);
-            selectQuery.setMaxResults(pageSize);
-            List<Car> cars = selectQuery.list();
-            model.addAttribute("currentPage", pageNo);
-            model.addAttribute("totalPages", totalPages);
-            model.addAttribute("totalItems", totalItems);
-            model.addAttribute("cars", cars);
-        }
+//        ///////////////////////// Hibernate pagination /////////////////////////////
+////         List<Car> hibernateTest = new CarDAO().findFreeCars();
+//        // since Hibernate-5 Session extends Autocloseable
+//        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+//            int pageSize = 3;
+//            Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
+//            Long totalItems = (Long) rowCountQuery.uniqueResult();
+//            int totalPages = (int) (Math.ceil((double) totalItems / pageSize));
+//            Query selectQuery = session.createQuery("FROM Car");
+//            selectQuery.setFirstResult((pageNo - 1) * pageSize);
+//            selectQuery.setMaxResults(pageSize);
+//            List<Car> cars = selectQuery.list();
+//            model.addAttribute("currentPage", pageNo);
+//            model.addAttribute("totalPages", totalPages);
+//            model.addAttribute("totalItems", totalItems);
+//            model.addAttribute("cars", cars);
+//        }
         ////////////////////////////jpa pagination/////////////////////////////////////
-//        int pageSize=3;
-//        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
-//        List<Car> cars = page.getContent();
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        model.addAttribute("cars", cars);
+        int pageSize=3;
+        Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
+        List<Car> cars = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("cars", cars);
         return "admin/cars";
     }
 
@@ -158,7 +145,6 @@ public class AdminController {
     }
 
     @PostMapping("/cars/add")
-    @Transactional
     public String addCar(@ModelAttribute("car") @Valid Car car,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -171,14 +157,12 @@ public class AdminController {
     }
 
     @GetMapping("/cars/update/{id}")
-    @Transactional(readOnly = true)
     public String updateCar(@PathVariable("id") long id, Model model) {
         model.addAttribute("car", carService.findCarById(id));
         return "admin/updateCar";
     }
 
     @PostMapping("/cars/update")
-    @Transactional
     public String updateCar(@ModelAttribute("car") @Valid Car car,
                             BindingResult bindingResult,
                             @RequestParam("car_status") CarStatus carStatus) {
@@ -196,7 +180,6 @@ public class AdminController {
     }
 
     @PostMapping("/cars/delete/{id}")
-    @Transactional
     public String deleteCar(@PathVariable("id") long id) {
       int a =  carService.deleteCar(id);
         logger.info(String.format("delete car: %d", id));
@@ -212,7 +195,6 @@ public class AdminController {
     }
 
     @GetMapping("/orders/page/{pageNo}")
-    @Transactional(readOnly = true)
     public String orders(@PathVariable("pageNo") int pageNo,
                          Model model) {
         int pageSize = 3;
@@ -226,7 +208,6 @@ public class AdminController {
     }
 
     @PostMapping("/order/status")
-    @Transactional
     public String setOrderStatus(@RequestParam("order_status") String order_status,
                                  @RequestParam("order_id") Long order_id) {
         Order order = orderService.getById(order_id);
@@ -240,7 +221,6 @@ public class AdminController {
     }
 
     @PostMapping("/order/finish")
-    @Transactional
     public String finishOrder(@RequestParam("orderId") Long orderId,
                               @RequestParam("carId") Long carId) {
         orderService.copyAndFinishOrder(orderId);

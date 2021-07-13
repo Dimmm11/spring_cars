@@ -4,13 +4,15 @@ import com.example.demo.controller.securingWeb.HibernateSessionFactory;
 import com.example.demo.model.entity.order.Order;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Component
 public class OrderDAO {
 
+    @Transactional
     public int makeOrder(Long userId, Long carId, Boolean driver, BigDecimal term, BigDecimal totalCost, LocalDateTime time) {
         int result = 0;
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
@@ -29,28 +31,27 @@ public class OrderDAO {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public List<Order> findByUserId(Long userId) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-//            Query query = session.createQuery("from Order o where o.user.id = :userId");
             Query query = session.createQuery("from Order oo where oo.user.id = :userId");
-//            Query query = session.createSQLQuery("select * from user_order  where user_id = :userId");
             query.setParameter("userId", userId);
-            return  query.list();
+            return query.list();
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Order> findByUserId(Long userId, int offset, int limit) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
             Query query = session.createQuery("from Order oo where oo.user.id = :userId");
-//            Query query = session.createSQLQuery("select * from user_order  where user_id = :userId");
             query.setParameter("userId", userId);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
-
-            return  query.list();
+            return query.list();
         }
     }
 
+    @Transactional
     public int cancelOrder(Long orderId, Long carId) {
         int result = 0;
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {

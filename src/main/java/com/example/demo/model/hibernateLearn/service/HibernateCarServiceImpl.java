@@ -2,15 +2,23 @@ package com.example.demo.model.hibernateLearn.service;
 
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.hibernateLearn.dao.CarDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
+
 @Component
 public class HibernateCarServiceImpl implements HibernateCarService {
 
+    @Autowired
+    public HibernateCarServiceImpl(CarDAO carDAO) {
+        this.carDAO = carDAO;
+    }
+
+    private CarDAO carDAO;
+
     @Override
     public int orderCar(Long id) {
-        return new CarDAO().orderCar(id);
+        return carDAO.orderCar(id);
     }
 
     @Override
@@ -20,17 +28,17 @@ public class HibernateCarServiceImpl implements HibernateCarService {
 
     @Override
     public List<Car> findAll() {
-        return new CarDAO().findFreeCars();
+        return carDAO.findFreeCars();
     }
 
     @Override
     public List<Car> findAll(int offset, int limit) {
-        return new CarDAO().findFreeCars(offset,limit);
+        return carDAO.findFreeCars(offset,limit);
     }
 
     @Override
     public Car findById(Long id) {
-        return new CarDAO().findById(id);
+        return carDAO.findById(id);
     }
 
     @Override
