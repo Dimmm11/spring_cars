@@ -25,19 +25,21 @@ class CarServiceImplTest {
     private CarServiceImpl carServiceImpl;
 
     @Test
-    void findAll() {
+    void findAllTest() {
         when(carRepository.findAll()).thenReturn(new ArrayList<>());
         List<Car> cars = carServiceImpl.findAll();
         Assertions.assertThat(cars).isNotNull();
     }
 
     @Test
-    void addCar() {
+    void addCarTest() {
         when(carServiceImpl.addCar(any(Car.class))).thenReturn(new Car());
         Car carToAdd = new Car();
         Car addedCar = carServiceImpl.addCar(carToAdd);
         Assertions.assertThat(addedCar).isInstanceOf(Car.class);
     }
+
+
 
 
 }

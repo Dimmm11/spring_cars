@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import java.security.Principal;
 
 @Controller
@@ -25,7 +26,7 @@ public class MainController {
     @GetMapping("/menu")
     public String menu(Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("logged user: "+principal.getName());
+        logger.info("logged user: " + principal.getName());
         if (auth != null
                 && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ADMIN"))) {

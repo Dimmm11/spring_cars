@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.NoCarsFoundException;
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.car.CarStatus;
 import com.example.demo.model.entity.order.Order;
@@ -45,6 +46,12 @@ public class AdminController {
     public String handleError(Exception ex) {
         logger.error(ex.getMessage(), ex);
         return "error";
+    }
+
+    @ExceptionHandler({NoCarsFoundException.class})
+    public String noCarsExceptionHandler(NoCarsFoundException ex){
+        logger.error(ex.getMessage());
+        return "error/noCarsFound";
     }
 
     /******************************************************************
@@ -111,24 +118,6 @@ public class AdminController {
     @GetMapping("/cars/page/{pageNo}")
     public String allCars(@PathVariable("pageNo") int pageNo,
                           Model model) {
-//        ///////////////////////// Hibernate pagination /////////////////////////////
-////         List<Car> hibernateTest = new CarDAO().findFreeCars();
-//        // since Hibernate-5 Session extends Autocloseable
-//        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-//            int pageSize = 3;
-//            Query rowCountQuery = session.createQuery("SELECT count (c.id) FROM Car c");
-//            Long totalItems = (Long) rowCountQuery.uniqueResult();
-//            int totalPages = (int) (Math.ceil((double) totalItems / pageSize));
-//            Query selectQuery = session.createQuery("FROM Car");
-//            selectQuery.setFirstResult((pageNo - 1) * pageSize);
-//            selectQuery.setMaxResults(pageSize);
-//            List<Car> cars = selectQuery.list();
-//            model.addAttribute("currentPage", pageNo);
-//            model.addAttribute("totalPages", totalPages);
-//            model.addAttribute("totalItems", totalItems);
-//            model.addAttribute("cars", cars);
-//        }
-        ////////////////////////////jpa pagination/////////////////////////////////////
         int pageSize=3;
         Page<Car> page = carService.findAllPaginated(pageNo, pageSize);
         List<Car> cars = page.getContent();

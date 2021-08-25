@@ -2,7 +2,9 @@ package com.example.demo.model.hibernateLearn.dao;
 
 import com.example.demo.controller.securingWeb.HibernateSessionFactory;
 import com.example.demo.model.entity.order.Order;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,16 +36,23 @@ public class OrderDAO {
     @Transactional(readOnly = true)
     public List<Order> findByUserId(Long userId) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            Query query = session.createQuery("from Order oo where oo.user.id = :userId");
+            session.beginTransaction();
+//            Query<Order> query = session.createQuery("from Order oo where oo.user.id = :userId", Order.class);
+            Query query = session.createQuery("select o from Order o left join fetch o.user left join fetch o.car where o.user.id = :userId");
             query.setParameter("userId", userId);
-            return query.list();
+            List list = query.getResultList();
+       session.getTransaction().commit();
+
+
+            return list;
+
         }
     }
 
     @Transactional(readOnly = true)
     public List<Order> findByUserId(Long userId, int offset, int limit) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            Query query = session.createQuery("from Order oo where oo.user.id = :userId");
+            Query query = session.createQuery("select o from Order o left join fetch o.user left join fetch o.car where o.user.id = :userId");
             query.setParameter("userId", userId);
             query.setFirstResult(offset);
             query.setMaxResults(limit);

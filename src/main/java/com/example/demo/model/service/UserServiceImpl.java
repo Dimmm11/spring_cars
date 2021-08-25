@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserEntity findById(long id) {
-//        return userRepository.findById(id).get();
         return userRepository.findById(id).orElseThrow(()-> new RuntimeException("no user by id:"+id));
     }
 

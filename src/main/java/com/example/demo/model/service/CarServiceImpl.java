@@ -1,5 +1,6 @@
 package com.example.demo.model.service;
 
+import com.example.demo.exception.NoCarsFoundException;
 import com.example.demo.model.entity.car.Car;
 import com.example.demo.model.entity.car.CarComfort;
 import com.example.demo.model.repository.CarRepository;
@@ -20,6 +21,7 @@ import java.util.NoSuchElementException;
 public class CarServiceImpl implements CarService{
 
     private static final String CAR_NOT_FOUND = "Car not found with id: '%d'";
+    private static final String NO_CARS_FOUND = "No cars found";
 
     @Autowired
     public CarServiceImpl(CarRepository carRepository) {
@@ -50,8 +52,8 @@ public class CarServiceImpl implements CarService{
     @Override
     @Transactional(readOnly = true)
     public Car findCarById(long id) {
-//        return carRepository.findById(id).get();
-        return carRepository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format(CAR_NOT_FOUND, id)));
+//        return carRepository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format(CAR_NOT_FOUND, id)));
+        return carRepository.findById(id).orElseThrow(() -> new NoCarsFoundException(NO_CARS_FOUND));
     }
 
     @Override

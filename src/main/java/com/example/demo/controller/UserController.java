@@ -70,7 +70,6 @@ public class UserController {
     @GetMapping("/cars/page/{pageNo}")
     public String findCarsPaginated(@PathVariable("pageNo") int pageNo,
                                     Model model) {
-        // hibernate pagination
         int pageSize = 3;
         Long totalRows = (long) hibernateCarService.findAll().size();
         int totalPages = (int) (Math.ceil((double) totalRows / pageSize));
@@ -79,14 +78,6 @@ public class UserController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalItems", totalRows);
         model.addAttribute("cars", freeCars);
-        // jpa pagination
-//        int pageSize = 3;
-//        Page<Car> page = carService.findFreeCarsPaginated(pageNo, pageSize);
-//        List<Car> freeCars = page.getContent();
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        model.addAttribute("cars", freeCars);
         return "cars/allCars";
     }
 
@@ -112,13 +103,6 @@ public class UserController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalItems", totalRows);
         model.addAttribute("orders", userOrders);
-        // jpa pagination
-//        Page<Order> page = orderService.findAllByUserPaginated(user.getId(), pageNo, pageSize);
-//        List<Order> userOrders = page.getContent();
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        model.addAttribute("orders", userOrders);
         return "user/order";
     }
 
@@ -134,7 +118,6 @@ public class UserController {
         int orderId = hibernateOrderService.makeOrder(userId, id, driver, term, car.getPrice().multiply(term),
                 LocalDateTime.now().withSecond(0));
         hibernateCarService.orderCar(id);
-        // last inserted row in multithreading ???
         logger.info(MessageFormat.format("user: {0} ordered car: {1} order id: {2}",
                 userEntity.getId(), car.getId(), orderId));
         model.addAttribute("orders", hibernateOrderService.findByUserId(userId));
